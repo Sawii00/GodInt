@@ -116,6 +116,17 @@ GodInt operator+(GodInt lhs, const int& rhs) {
 	return lhs;
 }
 
+GodInt operator-(GodInt lhs, const GodInt & rhs)
+{
+	lhs -= rhs;
+	return lhs;
+}
+GodInt operator-(GodInt lhs, const int & rhs)
+{
+	lhs -= GodInt(rhs);
+	return lhs;
+}
+
 GodInt & GodInt::operator += (const GodInt& rhs) {
 	int sum;
 	int carry = 0;
@@ -123,7 +134,7 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 
 	//take into account the sign
 	if (getSign() != rhs.getSign()) {
-		*this -= (-rhs); //STILL TO BE DEFINED @TODO
+		//		*this -= (-1 * rhs); //STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
@@ -157,26 +168,29 @@ GodInt & GodInt::operator -= (const GodInt& rhs) {
 	int borrow = 0;
 
 	if (getSign() != rhs.getSign()) {
-		*this += (-rhs); //STILL TO BE DEFINED @TODO
+		//		*this += (-1 * rhs); //STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
 	if (this == &rhs) {
-		//*this = 0; //STILL TO BE DEFINED @TODO
+		*this = 0; //STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
 	//we have to stack on top the longest number
 	//@TODO make this shit efficient
 	if (size() < rhs.size()) {
-		GodInt result = rhs - (*this);
-		result.editSign(Sign::negative);
-		return result;
+		*this = rhs - (*this);
+		if (getSign() == positive)
+			editSign(negative);
+		else
+			editSign(positive);
+		return *this;
 	}
 
 	//not sure this works
 	register short i;
-	for (i = 0; i < len; i++) {
+	for (i = 0; i < size(); i++) {
 		int val1 = getDigit(i) - borrow;
 		borrow = 0;
 		int val2 = rhs.getDigit(i);
@@ -201,13 +215,28 @@ GodInt & GodInt::operator--()
 	*this -= 1;
 	return *this;
 }
-
-GodInt GodInt::operator-() const
+GodInt & GodInt::operator++(int)
 {
-	sign = sign == positive ? negative : positive;
+	*this += 1;
 	return *this;
 }
 
+GodInt & GodInt::operator--(int)
+{
+	*this -= 1;
+	return *this;
+}
+
+/*GodInt GodInt::operator-()
+{
+	if (getSign() == positive)
+		this->editSign(Sign::negative);
+	else
+		this->editSign(Sign::positive);
+	return *this;
+}*/
+
+//SEEM TO BE WORKING
 bool operator==(const GodInt& lhs, const GodInt& rhs) {
 	if (lhs.getSign() == rhs.getSign() && lhs.size() == rhs.size()) {
 		for (register short i = 0; i < lhs.size(); i++) {
@@ -236,7 +265,7 @@ bool operator==(const GodInt& lhs, const int& rhs) {
 		return false;
 	}
 }
-
+//SEEMS TO BE WORKING
 bool operator< (const GodInt& lhs, const GodInt& rhs) {
 	if (lhs.size() != rhs.size()) {
 		if (lhs.getSign() == rhs.getSign()) {
@@ -261,15 +290,17 @@ bool operator< (const GodInt& lhs, const GodInt& rhs) {
 			if (lhs.getDigit(i) > rhs.getDigit(i))
 				return lhs.getSign() == Sign::negative;
 		}
+		if (lhs.getSign() == rhs.getSign())
+			return false;
+		else
+			return lhs.getSign() == Sign::negative;
 	}
 }
 bool operator< (const int& lhs, const GodInt& rhs) {
-	//TO BE IMPLEMENTED @TODO
-	return false;
+	return GodInt(lhs) < rhs;
 }
 bool operator< (const GodInt& lhs, const int& rhs) {
-	//TO BE IMPLEMENTED @TODO
-	return false;
+	return lhs < GodInt(rhs);
 }
 
 bool operator> (const GodInt& lhs, const GodInt& rhs) {

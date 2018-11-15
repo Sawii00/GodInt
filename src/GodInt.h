@@ -32,17 +32,20 @@ public:
 	//ARITHMETIC
 	GodInt & operator +=(const GodInt& rhs);
 	GodInt & operator -=(const GodInt&rhs);
+	GodInt & operator ++();
+	GodInt & operator --();
 	GodInt & operator ++(int);
 	GodInt & operator --(int);
 	friend GodInt operator+(GodInt lhs, const GodInt& rhs);
 	friend GodInt operator+(GodInt lhs, const int& rhs);
-	//friend GodInt operator-(const GodInt& rhs);
+	friend GodInt operator-(GodInt lhs, const GodInt& rhs);
+	friend GodInt operator-(GodInt lhs, const int& rhs);
 	//friend GodInt& operator=(const GodInt& rhs);
 	//friend GodInt& operator=(const int& rhs);
 
 	//multiplications to be implemented
 
-	GodInt operator-() const;
+	//GodInt operator-();
 
 	//BOOLEAN
 
