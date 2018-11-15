@@ -52,11 +52,9 @@ public:
 	friend bool operator==(const GodInt& lhs, const GodInt& rhs);
 	friend bool operator==(const GodInt& lhs, const int& rhs);
 	friend bool operator==(const int& lhs, const GodInt& rhs);
-	//NEED TO BE IMPLEMENTED
 	friend bool operator< (const GodInt& lhs, const GodInt& rhs);
 	friend bool operator< (const int& lhs, const GodInt& rhs);
 	friend bool operator< (const GodInt& lhs, const int& rhs);
-	//////////////////////
 	friend bool operator> (const GodInt& lhs, const GodInt& rhs);
 	friend bool operator> (const int& lhs, const GodInt& rhs);
 	friend bool operator> (const GodInt& lhs, const int& rhs);

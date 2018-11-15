@@ -152,8 +152,8 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 	for (i = 0; i < len; i++) {
 		int val1 = getDigit(i);
 		int val2 = rhs.getDigit(i);
-		sum = carry + (val1 + val2) % 10;
-		carry = int(val1 + val2) / 10;
+		sum = (carry + (val1 + val2)) % 10;
+		carry = (carry + (val1 + val2)) / 10;
 		if (i < size())
 			editDigit(i, sum);
 		else
@@ -236,7 +236,7 @@ GodInt & GodInt::operator--(int)
 	return *this;
 }*/
 
-//SEEM TO BE WORKING
+//SEEMS TO BE WORKING
 bool operator==(const GodInt& lhs, const GodInt& rhs) {
 	if (lhs.getSign() == rhs.getSign() && lhs.size() == rhs.size()) {
 		for (register short i = 0; i < lhs.size(); i++) {
@@ -283,7 +283,6 @@ bool operator< (const GodInt& lhs, const GodInt& rhs) {
 	}
 	else {
 		// same size
-		//not sure it works
 		for (register short i = lhs.size() - 1; i >= 0; i--) {
 			if (lhs.getDigit(i) < rhs.getDigit(i))
 				return lhs.getSign() == Sign::positive;
