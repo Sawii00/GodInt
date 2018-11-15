@@ -18,11 +18,11 @@ GodInt::GodInt(int n)
 		digits.push_back(rest);
 		rest = n % 10;
 	}
-	digits.resize(digits.size());
+	//digits.resize(digits.size());
 }
 GodInt::GodInt(std::string &str)
 {
-	//TODO: handle errors in the string parsing
+	//@TODO: handle errors in the string parsing
 
 	digits.reserve(str.size());
 	for (register int i = str.size() - 1; i >= 0; i--)
@@ -67,8 +67,6 @@ std::string GodInt::toString() const
 	if (sign == negative)result += '-';
 	for (register int i = digits.size() - 1; i >= 0; i--)
 	{
-		//TODO: FIX THIS SHIT PLEASEEEEE
-		//if (i < 0 || i>digits.size())break;
 		result += std::to_string(digits[i]);
 	}
 
@@ -77,6 +75,11 @@ std::string GodInt::toString() const
 
 Sign GodInt::getSign() const {
 	return sign;
+}
+
+void GodInt::editSign(Sign val)
+{
+	sign = val;
 }
 
 GodInt::~GodInt()
@@ -103,11 +106,14 @@ std::ostream & operator <<(std::ostream & out, GodInt & god_int)
 	return out;
 }
 
+//@TODO optimize this shit please
 GodInt operator+(GodInt lhs, const GodInt& rhs) {
-	return GodInt();
+	lhs += rhs;
+	return lhs;
 }
 GodInt operator+(GodInt lhs, const int& rhs) {
-	return operator+(lhs, GodInt(rhs));
+	lhs += GodInt(rhs);
+	return lhs;
 }
 
 GodInt & GodInt::operator += (const GodInt& rhs) {
@@ -117,13 +123,13 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 
 	//take into account the sign
 	if (getSign() != rhs.getSign()) {
-		//*this -= rhs*(-1); STILL TO BE DEFINED
+		*this -= (-rhs); //STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
 	//deal with += this
 	if (this == &rhs) {
-		//*this *= 2; STILL TO BE DEFINED
+		//*this *= 2; STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
@@ -133,8 +139,10 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 		len = rhs.size();
 	register short i;
 	for (i = 0; i < len; i++) {
-		sum = carry + (getDigit(i) + rhs.getDigit(i)) % 10;
-		carry = int(getDigit(i) + rhs.getDigit(i)) / 10;
+		int val1 = getDigit(i);
+		int val2 = rhs.getDigit(i);
+		sum = carry + (val1 + val2) % 10;
+		carry = int(val1 + val2) / 10;
 		if (i < size())
 			editDigit(i, sum);
 		else
@@ -144,10 +152,69 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 		addMSV(carry);
 	return *this;
 }
+GodInt & GodInt::operator -= (const GodInt& rhs) {
+	int res;
+	int borrow = 0;
+
+	if (getSign() != rhs.getSign()) {
+		*this += (-rhs); //STILL TO BE DEFINED @TODO
+		return *this;
+	}
+
+	if (this == &rhs) {
+		//*this = 0; //STILL TO BE DEFINED @TODO
+		return *this;
+	}
+
+	//we have to stack on top the longest number
+	//@TODO make this shit efficient
+	if (size() < rhs.size()) {
+		GodInt result = rhs - (*this);
+		result.editSign(Sign::negative);
+		return result;
+	}
+
+	//not sure this works
+	register short i;
+	for (i = 0; i < len; i++) {
+		int val1 = getDigit(i) - borrow;
+		borrow = 0;
+		int val2 = rhs.getDigit(i);
+
+		if (val1 < val2)
+			borrow++;
+
+		res = val1 + 10 * borrow - val2;
+
+		editDigit(i, res);
+	}
+}
+
+GodInt & GodInt::operator++()
+{
+	*this += 1;
+	return *this;
+}
+
+GodInt & GodInt::operator--()
+{
+	*this -= 1;
+	return *this;
+}
+
+GodInt GodInt::operator-() const
+{
+	sign = sign == positive ? negative : positive;
+	return *this;
+}
 
 bool operator==(const GodInt& lhs, const GodInt& rhs) {
-	if (lhs.getSign() == rhs.getSign()) {
-		return lhs.toString() == rhs.toString();
+	if (lhs.getSign() == rhs.getSign() && lhs.size() == rhs.size()) {
+		for (register short i = 0; i < lhs.size(); i++) {
+			if (lhs.getDigit(i) != rhs.getDigit(i))
+				return false;
+		}
+		return true;
 	}
 	else {
 		return false;
@@ -171,27 +238,73 @@ bool operator==(const GodInt& lhs, const int& rhs) {
 }
 
 bool operator< (const GodInt& lhs, const GodInt& rhs) {
-	//TO BE IMPLEMENTED
-	return false;
+	if (lhs.size() != rhs.size()) {
+		if (lhs.getSign() == rhs.getSign()) {
+			if (lhs.getSign() == positive)
+				return lhs.size() < rhs.size();
+			else
+				return lhs.size() > rhs.size();
+		}
+		else {
+			if (lhs.getSign() == positive)
+				return false;
+			else
+				return true;
+		}
+	}
+	else {
+		// same size
+		//not sure it works
+		for (register short i = lhs.size() - 1; i >= 0; i--) {
+			if (lhs.getDigit(i) < rhs.getDigit(i))
+				return lhs.getSign() == Sign::positive;
+			if (lhs.getDigit(i) > rhs.getDigit(i))
+				return lhs.getSign() == Sign::negative;
+		}
+	}
 }
 bool operator< (const int& lhs, const GodInt& rhs) {
-	//TO BE IMPLEMENTED
+	//TO BE IMPLEMENTED @TODO
 	return false;
 }
 bool operator< (const GodInt& lhs, const int& rhs) {
-	//TO BE IMPLEMENTED
+	//TO BE IMPLEMENTED @TODO
 	return false;
 }
 
-bool operator> (const GodInt& lhs, const GodInt& rhs) { return  operator< (rhs, lhs); }
-bool operator> (const int& lhs, const GodInt& rhs) { return  operator< (rhs, lhs); }
-bool operator> (const GodInt& lhs, const int& rhs) { return  operator< (rhs, lhs); }
-bool operator<=(const GodInt& lhs, const GodInt& rhs) { return !operator> (lhs, rhs); }
-bool operator<=(const int& lhs, const GodInt& rhs) { return !operator> (lhs, rhs); }
-bool operator<=(const GodInt& lhs, const int& rhs) { return !operator> (lhs, rhs); }
-bool operator>=(const GodInt& lhs, const GodInt& rhs) { return !operator< (lhs, rhs); }
-bool operator>=(const int& lhs, const GodInt& rhs) { return !operator< (lhs, rhs); }
-bool operator>=(const GodInt& lhs, const int& rhs) { return !operator< (lhs, rhs); }
-bool operator!=(const GodInt& lhs, const GodInt& rhs) { return !operator==(lhs, rhs); }
-bool operator!=(const int& lhs, const GodInt& rhs) { return !operator==(lhs, rhs); }
-bool operator!=(const GodInt& lhs, const int& rhs) { return !operator==(lhs, rhs); }
+bool operator> (const GodInt& lhs, const GodInt& rhs) {
+	return  operator< (rhs, lhs);
+}
+bool operator> (const int& lhs, const GodInt& rhs) {
+	return  operator< (rhs, lhs);
+}
+bool operator> (const GodInt& lhs, const int& rhs) {
+	return  operator< (rhs, lhs);
+}
+bool operator<=(const GodInt& lhs, const GodInt& rhs) {
+	return !operator> (lhs, rhs);
+}
+bool operator<=(const int& lhs, const GodInt& rhs) {
+	return !operator> (lhs, rhs);
+}
+bool operator<=(const GodInt& lhs, const int& rhs) {
+	return !operator> (lhs, rhs);
+}
+bool operator>=(const GodInt& lhs, const GodInt& rhs) {
+	return !operator< (lhs, rhs);
+}
+bool operator>=(const int& lhs, const GodInt& rhs) {
+	return !operator< (lhs, rhs);
+}
+bool operator>=(const GodInt& lhs, const int& rhs) {
+	return !operator< (lhs, rhs);
+}
+bool operator!=(const GodInt& lhs, const GodInt& rhs) {
+	return !operator==(lhs, rhs);
+}
+bool operator!=(const int& lhs, const GodInt& rhs) {
+	return !operator==(lhs, rhs);
+}
+bool operator!=(const GodInt& lhs, const int& rhs) {
+	return !operator==(lhs, rhs);
+}

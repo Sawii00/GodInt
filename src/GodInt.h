@@ -18,6 +18,7 @@ public:
 	void editDigit(int id, int val);
 	int getDigit(int n) const;
 	Sign getSign() const;
+	void editSign(Sign val);
 	int size() const;
 	std::string toString() const;
 	~GodInt();
@@ -30,9 +31,9 @@ public:
 
 	//ARITHMETIC
 	GodInt & operator +=(const GodInt& rhs);
-	//friend GodInt & operator -=(const GodInt&rhs);
-	//friend GodInt & operator ++(int);
-	//friend GodInt & operator --(int);
+	GodInt & operator -=(const GodInt&rhs);
+	GodInt & operator ++(int);
+	GodInt & operator --(int);
 	friend GodInt operator+(GodInt lhs, const GodInt& rhs);
 	friend GodInt operator+(GodInt lhs, const int& rhs);
 	//friend GodInt operator-(const GodInt& rhs);
@@ -40,6 +41,8 @@ public:
 	//friend GodInt& operator=(const int& rhs);
 
 	//multiplications to be implemented
+
+	GodInt operator-() const;
 
 	//BOOLEAN
 
