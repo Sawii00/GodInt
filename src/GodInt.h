@@ -3,10 +3,15 @@
 #include <string>
 #include <iostream>
 enum Sign { positive, negative };
+//@TODO:
+//migrate to char when possible
+//alternative solution: use a single integer to store way more than 10 values
+//maybe up until 9999 in a single digit
+
 class GodInt
 {
 private:
-	std::vector <int> digits;
+	std::vector <short> digits;
 	Sign sign;
 
 public:
@@ -18,6 +23,7 @@ public:
 	void editDigit(int id, int val);
 	int getDigit(int n) const;
 	Sign getSign() const;
+	void editSign(Sign val);
 	int size() const;
 	std::string toString() const;
 	~GodInt();
@@ -30,27 +36,32 @@ public:
 
 	//ARITHMETIC
 	GodInt & operator +=(const GodInt& rhs);
-	//friend GodInt & operator -=(const GodInt&rhs);
-	//friend GodInt & operator ++(int);
-	//friend GodInt & operator --(int);
+	GodInt & operator -=(const GodInt&rhs);
+	GodInt & operator ++();
+	GodInt & operator --();
+	GodInt & operator ++(int);
+	GodInt & operator --(int);
 	friend GodInt operator+(GodInt lhs, const GodInt& rhs);
 	friend GodInt operator+(GodInt lhs, const int& rhs);
-	//friend GodInt operator-(const GodInt& rhs);
+	friend GodInt operator-(GodInt lhs, const GodInt& rhs);
+	friend GodInt operator-(GodInt lhs, const int& rhs);
 	//friend GodInt& operator=(const GodInt& rhs);
 	//friend GodInt& operator=(const int& rhs);
 
 	//multiplications to be implemented
+
+	GodInt& operator *=(const GodInt& rhs);
+
+	//GodInt operator-();
 
 	//BOOLEAN
 
 	friend bool operator==(const GodInt& lhs, const GodInt& rhs);
 	friend bool operator==(const GodInt& lhs, const int& rhs);
 	friend bool operator==(const int& lhs, const GodInt& rhs);
-	//NEED TO BE IMPLEMENTED
 	friend bool operator< (const GodInt& lhs, const GodInt& rhs);
 	friend bool operator< (const int& lhs, const GodInt& rhs);
 	friend bool operator< (const GodInt& lhs, const int& rhs);
-	//////////////////////
 	friend bool operator> (const GodInt& lhs, const GodInt& rhs);
 	friend bool operator> (const int& lhs, const GodInt& rhs);
 	friend bool operator> (const GodInt& lhs, const int& rhs);
