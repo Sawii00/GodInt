@@ -21,19 +21,20 @@ public:
 };
 
 int main() {
-	/*Timer t;
+	Timer t;
 	GodInt *result = new GodInt();
-	*result = fibo_iter(150000);
+	*result = fibo_iter(1000000);
 
 	std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
 	std::cout << *result << '\n';
 
-	system("pause");*/
+	system("pause");
 
-	char c1 = 1;
+	/*char c1 = 1;
 	char c2 = 100;
 	c1 += c2;
-	std::cout << int(c1);
+	std::cout << int(c1);*/
+	//system("pause");
 
 	return 0;
 }

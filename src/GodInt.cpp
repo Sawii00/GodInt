@@ -38,17 +38,17 @@ GodInt::GodInt(std::string &str)
 	}
 }
 
-void GodInt::addLSV(int n)
+void GodInt::addLSV(std::uint8_t n)
 {
 	digits.insert(digits.begin(), n);
 }
 
-void GodInt::addMSV(int n)
+void GodInt::addMSV(std::uint8_t n)
 {
 	digits.push_back(n);
 }
 //return the digit at the specified index.... if the index is invalid, 0 is returned
-int GodInt::getDigit(int n) const
+std::uint8_t GodInt::getDigit(int n) const
 {
 	if (n >= 0 && n < digits.size())
 		return digits[n];
@@ -86,7 +86,7 @@ GodInt::~GodInt()
 {
 }
 
-void GodInt::editDigit(int id, int val) {
+void GodInt::editDigit(int id, std::uint8_t val) {
 	if (id < digits.size() && id >= 0)
 		digits[id] = val;
 }
@@ -128,8 +128,8 @@ GodInt operator-(GodInt lhs, const int & rhs)
 }
 
 GodInt & GodInt::operator += (const GodInt& rhs) {
-	int sum;
-	int carry = 0;
+	std::uint8_t sum;
+	std::uint8_t carry = 0;
 	int len;
 
 	//take into account the sign
@@ -148,10 +148,10 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 		len = size();
 	else
 		len = rhs.size();
-	register short i;
+	register long i;
 	for (i = 0; i < len; i++) {
-		int val1 = getDigit(i);
-		int val2 = rhs.getDigit(i);
+		std::uint8_t val1 = getDigit(i);
+		std::uint8_t val2 = rhs.getDigit(i);
 		sum = (carry + (val1 + val2)) % 10;
 		carry = (carry + (val1 + val2)) / 10;
 		if (i < size())
@@ -164,8 +164,8 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 	return *this;
 }
 GodInt & GodInt::operator -= (const GodInt& rhs) {
-	int res;
-	int borrow = 0;
+	std::uint8_t res;
+	std::uint8_t borrow = 0;
 
 	if (getSign() != rhs.getSign()) {
 		//		*this += (-1 * rhs); //STILL TO BE DEFINED @TODO
@@ -189,11 +189,11 @@ GodInt & GodInt::operator -= (const GodInt& rhs) {
 	}
 
 	//not sure this works
-	register short i;
+	register long i;
 	for (i = 0; i < size(); i++) {
-		int val1 = getDigit(i) - borrow;
+		std::uint8_t val1 = getDigit(i) - borrow;
 		borrow = 0;
-		int val2 = rhs.getDigit(i);
+		std::uint8_t val2 = rhs.getDigit(i);
 
 		if (val1 < val2)
 			borrow++;
@@ -292,7 +292,7 @@ bool operator< (const GodInt& lhs, const GodInt& rhs) {
 	}
 	else {
 		// same size
-		for (register short i = lhs.size() - 1; i >= 0; i--) {
+		for (register long i = lhs.size() - 1; i >= 0; i--) {
 			if (lhs.getDigit(i) < rhs.getDigit(i))
 				return lhs.getSign() == Sign::positive;
 			if (lhs.getDigit(i) > rhs.getDigit(i))

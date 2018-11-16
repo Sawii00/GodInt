@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <cstdint>
 enum Sign { positive, negative };
 //@TODO:
 //migrate to char when possible
@@ -11,17 +12,17 @@ enum Sign { positive, negative };
 class GodInt
 {
 private:
-	std::vector <short> digits;
+	std::vector <std::uint8_t> digits;
 	Sign sign;
 
 public:
 	GodInt();
 	GodInt(int n);
 	GodInt(std::string &str);
-	void addLSV(int n);
-	void addMSV(int n);
-	void editDigit(int id, int val);
-	int getDigit(int n) const;
+	void addLSV(std::uint8_t n);
+	void addMSV(std::uint8_t n);
+	void editDigit(int id, std::uint8_t val);
+	std::uint8_t getDigit(int n) const;
 	Sign getSign() const;
 	void editSign(Sign val);
 	int size() const;
