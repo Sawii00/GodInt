@@ -2,7 +2,6 @@
 #include <iostream>
 #include <chrono>
 GodInt fibo_iter(int n);
-long long fibo_iter2(int n);
 
 class Timer {
 private:
@@ -22,16 +21,19 @@ public:
 };
 
 int main() {
-	Timer t;
-	GodInt result = fibo_iter(100000);
-	std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
-	std::cout << result << '\n';
-	//t.reset();
-	//long long result2 = fibo_iter2(50);
-	//std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
-	//std::cout << result2 << '\n';
+	/*Timer t;
+	GodInt *result = new GodInt();
+	*result = fibo_iter(150000);
 
-	system("pause");
+	std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
+	std::cout << *result << '\n';
+
+	system("pause");*/
+
+	char c1 = 1;
+	char c2 = 100;
+	c1 += c2;
+	std::cout << int(c1);
 
 	return 0;
 }
@@ -48,20 +50,6 @@ GodInt fibo_iter(int n)
 		previous = current;
 		current = next;
 		std::cout << i << '\n';
-	}
-	return next;
-}
-long long fibo_iter2(int n)
-{
-	long long previous = 1;
-	long long current = 1;
-	long long next = 1;
-
-	for (int i = 3; i <= n; ++i)
-	{
-		next = current + previous;
-		previous = current;
-		current = next;
 	}
 	return next;
 }

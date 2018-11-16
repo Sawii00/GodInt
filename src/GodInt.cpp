@@ -202,6 +202,7 @@ GodInt & GodInt::operator -= (const GodInt& rhs) {
 
 		editDigit(i, res);
 	}
+	//return *this ?????
 }
 
 GodInt & GodInt::operator++()
@@ -224,6 +225,14 @@ GodInt & GodInt::operator++(int)
 GodInt & GodInt::operator--(int)
 {
 	*this -= 1;
+	return *this;
+}
+
+GodInt & GodInt::operator*=(const GodInt & rhs)
+{
+	Sign final_sign = Sign::positive;
+	if (getSign() != rhs.getSign())
+		final_sign = Sign::negative;
 	return *this;
 }
 

@@ -3,10 +3,15 @@
 #include <string>
 #include <iostream>
 enum Sign { positive, negative };
+//@TODO:
+//migrate to char when possible
+//alternative solution: use a single integer to store way more than 10 values
+//maybe up until 9999 in a single digit
+
 class GodInt
 {
 private:
-	std::vector <int> digits;
+	std::vector <short> digits;
 	Sign sign;
 
 public:
@@ -44,6 +49,8 @@ public:
 	//friend GodInt& operator=(const int& rhs);
 
 	//multiplications to be implemented
+
+	GodInt& operator *=(const GodInt& rhs);
 
 	//GodInt operator-();
 
