@@ -21,20 +21,20 @@ public:
 };
 
 int main() {
-	Timer t;
+	/*Timer t;
 	GodInt *result = new GodInt();
-	*result = fibo_iter(1000000);
+	*result = fibo_iter(500000);
 
 	std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
-	std::cout << *result << '\n';
+	std::cout << *result << '\n';*/
+
+	///NOT WORKING, NEEDS A FIX WITH SUBTRACTION///////////////
+	GodInt gd1(100000);
+	gd1 -= 100002;
+	std::cout << gd1 << '\n';
+	//////////////////////////////////////////////////////////
 
 	system("pause");
-
-	/*char c1 = 1;
-	char c2 = 100;
-	c1 += c2;
-	std::cout << int(c1);*/
-	//system("pause");
 
 	return 0;
 }

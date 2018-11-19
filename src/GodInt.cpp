@@ -20,22 +20,27 @@ GodInt::GodInt(int n)
 	}
 	//digits.resize(digits.size());
 }
-GodInt::GodInt(std::string &str)
+GodInt::GodInt(std::string str)
 {
-	//@TODO: handle errors in the string parsing
-
 	digits.reserve(str.size());
 	for (register int i = str.size() - 1; i >= 0; i--)
 	{
 		char & ch = str[i];
-		if (ch != '+' && ch != '-')
+		if (ch != '+' && ch != '-' && isdigit(ch))
 			//trick to retrieve the correct integer and not the ascii value
 			digits.push_back(ch - '0');
 		else if (ch == '-')
 			sign = negative;
-		else
+		else if (ch == '+')
 			sign = positive;
+		else
+			throw "This is not an integer!!!";
+		//it throws an error if parsing characters instead of digits
 	}
+}
+
+GodInt::GodInt(const char * str) : GodInt(std::string(str))
+{
 }
 
 void GodInt::addLSV(std::uint8_t n)
@@ -71,6 +76,13 @@ std::string GodInt::toString() const
 	}
 
 	return result;
+}
+
+void GodInt::clearZeros()
+{
+	for (register int i = size() - 1; getDigit(i) == 0; i--) {
+		digits.pop_back();
+	}
 }
 
 Sign GodInt::getSign() const {
@@ -127,6 +139,16 @@ GodInt operator-(GodInt lhs, const int & rhs)
 	return lhs;
 }
 
+GodInt operator*(GodInt lhs, const GodInt & rhs)
+{
+	return GodInt();
+}
+
+GodInt operator*(GodInt lhs, const int & rhs)
+{
+	return GodInt();
+}
+
 GodInt & GodInt::operator += (const GodInt& rhs) {
 	std::uint8_t sum;
 	std::uint8_t carry = 0;
@@ -134,7 +156,7 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 
 	//take into account the sign
 	if (getSign() != rhs.getSign()) {
-		//		*this -= (-1 * rhs); //STILL TO BE DEFINED @TODO
+		//*this -= (-1 * rhs); //STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
@@ -163,12 +185,18 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 		addMSV(carry);
 	return *this;
 }
+GodInt & GodInt::operator+=(const int & rhs)
+{
+	GodInt rhs_(rhs);
+	return (*this += rhs_);
+}
+//STILL NOT WORKING GODDAMMIT ---> 100000-100002 IS SHIT
 GodInt & GodInt::operator -= (const GodInt& rhs) {
-	std::uint8_t res;
+	std::int8_t res;
 	std::uint8_t borrow = 0;
 
 	if (getSign() != rhs.getSign()) {
-		//		*this += (-1 * rhs); //STILL TO BE DEFINED @TODO
+		//*this += (-1 * rhs); //STILL TO BE DEFINED @TODO
 		return *this;
 	}
 
@@ -188,21 +216,23 @@ GodInt & GodInt::operator -= (const GodInt& rhs) {
 		return *this;
 	}
 
-	//not sure this works
-	register long i;
-	for (i = 0; i < size(); i++) {
-		std::uint8_t val1 = getDigit(i) - borrow;
+	for (register long i = 0; i < size(); i++) {
+		res = getDigit(i) - rhs.getDigit(i) - borrow;
 		borrow = 0;
-		std::uint8_t val2 = rhs.getDigit(i);
-
-		if (val1 < val2)
-			borrow++;
-
-		res = val1 + 10 * borrow - val2;
-
+		if (res < 0) {
+			res += 10;
+			borrow = 1;
+		}
 		editDigit(i, res);
 	}
-	//return *this ?????
+	clearZeros();
+	return *this;
+}
+
+GodInt & GodInt::operator-=(const int & rhs)
+{
+	GodInt rhs_(rhs);
+	return (*this -= rhs_);
 }
 
 GodInt & GodInt::operator++()
@@ -236,14 +266,14 @@ GodInt & GodInt::operator*=(const GodInt & rhs)
 	return *this;
 }
 
-/*GodInt GodInt::operator-()
+GodInt GodInt::operator-()
 {
 	if (getSign() == positive)
-		this->editSign(Sign::negative);
+		editSign(Sign::negative);
 	else
-		this->editSign(Sign::positive);
+		editSign(Sign::positive);
 	return *this;
-}*/
+}
 
 //SEEMS TO BE WORKING
 bool operator==(const GodInt& lhs, const GodInt& rhs) {

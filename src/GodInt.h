@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cstdint>
+#include <cctype>
 enum Sign { positive, negative };
 //@TODO:
 //migrate to char when possible
@@ -18,7 +19,8 @@ private:
 public:
 	GodInt();
 	GodInt(int n);
-	GodInt(std::string &str);
+	GodInt(std::string str);
+	GodInt(const char* str);
 	void addLSV(std::uint8_t n);
 	void addMSV(std::uint8_t n);
 	void editDigit(int id, std::uint8_t val);
@@ -27,6 +29,7 @@ public:
 	void editSign(Sign val);
 	int size() const;
 	std::string toString() const;
+	void clearZeros();
 	~GodInt();
 
 	//operators overload
@@ -37,7 +40,9 @@ public:
 
 	//ARITHMETIC
 	GodInt & operator +=(const GodInt& rhs);
+	GodInt & operator +=(const int& rhs);
 	GodInt & operator -=(const GodInt&rhs);
+	GodInt & operator -=(const int&rhs);
 	GodInt & operator ++();
 	GodInt & operator --();
 	GodInt & operator ++(int);
@@ -52,8 +57,10 @@ public:
 	//multiplications to be implemented
 
 	GodInt& operator *=(const GodInt& rhs);
+	friend GodInt operator *(GodInt lhs, const GodInt &rhs);
+	friend GodInt operator *(GodInt lhs, const int &rhs);
 
-	//GodInt operator-();
+	GodInt operator-();
 
 	//BOOLEAN
 
