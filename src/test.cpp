@@ -27,12 +27,9 @@ int main() {
 
 	std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
 	std::cout << *result << '\n';*/
-
-	///NOT WORKING, NEEDS A FIX WITH SUBTRACTION///////////////
-	GodInt gd1(100000);
-	gd1 -= 100002;
-	std::cout << gd1 << '\n';
-	//////////////////////////////////////////////////////////
+	GodInt test1(123);
+	GodInt test2 = test1.multiplyBySingleDigit(82);
+	std::cout << test2 << std::endl;
 
 	system("pause");
 

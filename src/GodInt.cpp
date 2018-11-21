@@ -1,4 +1,5 @@
 #include "GodInt.h"
+#include <cmath>
 
 GodInt::GodInt()
 	:sign(positive)
@@ -69,6 +70,7 @@ int GodInt::size() const
 std::string GodInt::toString() const
 {
 	std::string result;
+	if (digits.size() == 0)return "0";
 	if (sign == negative)result += '-';
 	for (register int i = digits.size() - 1; i >= 0; i--)
 	{
@@ -82,6 +84,22 @@ void GodInt::clearZeros()
 {
 	for (register int i = size() - 1; getDigit(i) == 0; i--) {
 		digits.pop_back();
+	}
+}
+
+unsigned long long int GodInt::toInt()
+{
+	//only if size is less than 18
+	if (size() < 18) {
+		int result = 0;
+		for (int i = 0; i < size(); i++)
+		{
+			result += getDigit(i)*(int(std::pow(10.0, i)));
+		}
+		return result;
+	}
+	else {
+		throw "The number you are converting is too big for an ULLI";
 	}
 }
 
@@ -139,16 +157,6 @@ GodInt operator-(GodInt lhs, const int & rhs)
 	return lhs;
 }
 
-GodInt operator*(GodInt lhs, const GodInt & rhs)
-{
-	return GodInt();
-}
-
-GodInt operator*(GodInt lhs, const int & rhs)
-{
-	return GodInt();
-}
-
 GodInt & GodInt::operator += (const GodInt& rhs) {
 	std::uint8_t sum;
 	std::uint8_t carry = 0;
@@ -190,7 +198,6 @@ GodInt & GodInt::operator+=(const int & rhs)
 	GodInt rhs_(rhs);
 	return (*this += rhs_);
 }
-//STILL NOT WORKING GODDAMMIT ---> 100000-100002 IS SHIT
 GodInt & GodInt::operator -= (const GodInt& rhs) {
 	std::int8_t res;
 	std::uint8_t borrow = 0;
@@ -201,13 +208,13 @@ GodInt & GodInt::operator -= (const GodInt& rhs) {
 	}
 
 	if (this == &rhs) {
-		*this = 0; //STILL TO BE DEFINED @TODO
+		*this = 0;
 		return *this;
 	}
 
 	//we have to stack on top the longest number
 	//@TODO make this shit efficient
-	if (size() < rhs.size()) {
+	if (*this < rhs) {
 		*this = rhs - (*this);
 		if (getSign() == positive)
 			editSign(negative);
@@ -257,14 +264,54 @@ GodInt & GodInt::operator--(int)
 	*this -= 1;
 	return *this;
 }
+GodInt operator*(GodInt lhs, const GodInt & rhs)
+{
+	return GodInt();
+}
+
+GodInt operator*(GodInt lhs, const int & rhs)
+{
+	return GodInt();
+}
+
+GodInt GodInt::multiplyBySingleDigit(short digit)
+{
+	//ONLY USE WITH 1-DIGIT NUMBERSSSSSSSSSSSSSSSSSS AND POSITIVE ONES
+	if (digit <= 0 || digit / 10 != 0)throw"Error, only use with 1-digit positive numbers";
+	int res = 0;
+	for (int i = 0; i < size(); i++)
+	{
+		res += getDigit(i) * digit * int(std::pow(10.0, i));
+	}
+	return GodInt(res);
+}
 
 GodInt & GodInt::operator*=(const GodInt & rhs)
 {
 	Sign final_sign = Sign::positive;
+	short rest = 0;
+	short res = 0;
+
 	if (getSign() != rhs.getSign())
 		final_sign = Sign::negative;
+
+	//stack the biggest on top
+	if (size() < rhs.size())
+		return rhs *= (*this);
+
+	for (register int i = 0; i < rhs.size(); i++) {
+		for (register int j = 0; j < size(); j++) {
+			res = (getDigit(j) * rhs.getDigit(i)) % 10;
+			rest = (getDigit(j) * rhs.getDigit(i)) / 10;
+			editDigit()
+		}
+	}
+	//@TODO FINISH THIS... INCOMPLETE
+
 	return *this;
 }
+
+//*this * rhs.getDigit(0) + 10*(*this)*rhs.getDigit(1) ........................
 
 GodInt GodInt::operator-()
 {

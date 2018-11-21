@@ -14,7 +14,7 @@ class GodInt
 {
 private:
 	std::vector <std::uint8_t> digits;
-	Sign sign;
+	Sign sign = Sign::positive;
 
 public:
 	GodInt();
@@ -30,7 +30,10 @@ public:
 	int size() const;
 	std::string toString() const;
 	void clearZeros();
+	unsigned long long int toInt();
 	~GodInt();
+
+	GodInt multiplyBySingleDigit(short digit);
 
 	//operators overload
 
