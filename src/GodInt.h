@@ -4,23 +4,28 @@
 #include <iostream>
 #include <cstdint>
 #include <cctype>
+
+typedef unsigned long long int ulli;
 enum Sign { positive, negative };
 //@TODO:
-//migrate to char when possible
 //alternative solution: use a single integer to store way more than 10 values
 //maybe up until 9999 in a single digit
+//@TODO for multiplication
+//implement https://en.wikipedia.org/wiki/Karatsuba_algorithm and further improved algorithms
 
 class GodInt
 {
 private:
 	std::vector <std::uint8_t> digits;
 	Sign sign = Sign::positive;
+	static GodInt range_prod(ulli low, ulli high);
 
 public:
 	GodInt();
 	GodInt(int n);
 	GodInt(std::string str);
 	GodInt(const char* str);
+	GodInt(const GodInt &rhs);
 	void addLSV(std::uint8_t n);
 	void addMSV(std::uint8_t n);
 	void editDigit(int id, std::uint8_t val);
@@ -29,6 +34,10 @@ public:
 	void editSign(Sign val);
 	int size() const;
 	std::string toString() const;
+	/////@TODO implement power
+	static GodInt pow(GodInt& lhs, int n);
+	//DONT THINK THIS IS USEFUL AT ALL
+	static GodInt pow(GodInt& lhs, GodInt & rhs);
 	void clearZeros();
 	unsigned long long int toInt();
 	~GodInt();
@@ -60,6 +69,7 @@ public:
 	//multiplications to be implemented
 
 	GodInt& operator *=(const GodInt& rhs);
+	GodInt& operator *=(const int n);
 	friend GodInt operator *(GodInt lhs, const GodInt &rhs);
 	friend GodInt operator *(GodInt lhs, const int &rhs);
 
@@ -85,4 +95,8 @@ public:
 	friend bool operator!=(const GodInt& lhs, const GodInt& rhs);
 	friend bool operator!=(const int& lhs, const GodInt& rhs);
 	friend bool operator!=(const GodInt& lhs, const int& rhs);
+
+	//utility functions
+	static GodInt fibonacci(long long int n);
+	static GodInt factorial(long long int n);
 };

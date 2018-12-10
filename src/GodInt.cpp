@@ -8,18 +8,19 @@ GodInt::GodInt()
 }
 GodInt::GodInt(int n)
 {
-	sign = n > 0 ? positive : negative;
+	sign = n >= 0 ? positive : negative;
 	n = n < 0 ? n * -1 : n;
 	int rest = n % 10;
 
 	digits.reserve(10);
-
+	if (n == 0)
+		digits.push_back(0);
 	while (n != 0) {
 		n = n / 10;
 		digits.push_back(rest);
 		rest = n % 10;
 	}
-	//digits.resize(digits.size());
+	digits.resize(digits.size());
 }
 GodInt::GodInt(std::string str)
 {
@@ -42,6 +43,14 @@ GodInt::GodInt(std::string str)
 
 GodInt::GodInt(const char * str) : GodInt(std::string(str))
 {
+}
+
+GodInt::GodInt(const GodInt &rhs)
+{
+	std::cout << "Copied\n";
+	for (register int i = 0; i < rhs.size(); i++) {
+		addMSV(rhs.getDigit(i));
+	}
 }
 
 void GodInt::addLSV(std::uint8_t n)
@@ -78,6 +87,19 @@ std::string GodInt::toString() const
 	}
 
 	return result;
+}
+GodInt GodInt::pow(GodInt & lhs, int n)
+{
+	GodInt result(lhs);
+	for (register int i = 0; i < n; i++) {
+		result *= lhs;
+	}
+	return result;
+}
+//DONT THINK THIS IS USEFUL AT ALL
+GodInt GodInt::pow(GodInt & lhs, GodInt & rhs)
+{
+	return GodInt(0);
 }
 
 void GodInt::clearZeros()
@@ -164,13 +186,13 @@ GodInt & GodInt::operator += (const GodInt& rhs) {
 
 	//take into account the sign
 	if (getSign() != rhs.getSign()) {
-		//*this -= (-1 * rhs); //STILL TO BE DEFINED @TODO
+		*this -= (-1 * rhs);
 		return *this;
 	}
 
 	//deal with += this
 	if (this == &rhs) {
-		//*this *= 2; STILL TO BE DEFINED @TODO
+		*this *= 2;
 		return *this;
 	}
 
@@ -203,7 +225,7 @@ GodInt & GodInt::operator -= (const GodInt& rhs) {
 	std::uint8_t borrow = 0;
 
 	if (getSign() != rhs.getSign()) {
-		//*this += (-1 * rhs); //STILL TO BE DEFINED @TODO
+		*this += (-1 * rhs);
 		return *this;
 	}
 
@@ -266,12 +288,12 @@ GodInt & GodInt::operator--(int)
 }
 GodInt operator*(GodInt lhs, const GodInt & rhs)
 {
-	return GodInt();
+	return lhs *= rhs;
 }
 
 GodInt operator*(GodInt lhs, const int & rhs)
 {
-	return GodInt();
+	return lhs *= GodInt(rhs);
 }
 
 GodInt GodInt::multiplyBySingleDigit(short digit)
@@ -286,32 +308,51 @@ GodInt GodInt::multiplyBySingleDigit(short digit)
 	return GodInt(res);
 }
 
-GodInt & GodInt::operator*=(const GodInt & rhs)
-{
-	Sign final_sign = Sign::positive;
-	short rest = 0;
-	short res = 0;
-
-	if (getSign() != rhs.getSign())
-		final_sign = Sign::negative;
-
-	//stack the biggest on top
-	if (size() < rhs.size())
-		return rhs *= (*this);
-
-	for (register int i = 0; i < rhs.size(); i++) {
-		for (register int j = 0; j < size(); j++) {
-			res = (getDigit(j) * rhs.getDigit(i)) % 10;
-			rest = (getDigit(j) * rhs.getDigit(i)) / 10;
-			editDigit()
-		}
+GodInt & GodInt::operator *=(const int n) {
+	int carry = 0;
+	int product;
+	if (n == 0) {
+		*this = 0;
+		return *this;
 	}
-	//@TODO FINISH THIS... INCOMPLETE
+	if (n == 1) {
+		return *this;
+	}
 
+	if (n < 0 && getSign() == Sign::positive) {
+		editSign(Sign::negative);
+	}
+	else if (n < 0 && getSign() == Sign::negative) {
+		editSign(Sign::positive);
+	}
+
+	for (register int i = 0; i < size(); i++)
+	{
+		product = std::abs(n) * getDigit(i) + carry;
+		carry = product / 10;
+		editDigit(i, product % 10);
+	}
+	while (carry != 0) {
+		addMSV(carry % 10);
+		carry /= 10;
+	}
 	return *this;
 }
 
-//*this * rhs.getDigit(0) + 10*(*this)*rhs.getDigit(1) ........................
+//STUPID ASS VERSION
+GodInt & GodInt::operator*=(const GodInt & rhs)
+{
+	if (getSign() != rhs.getSign())
+		this->editSign(Sign::negative);
+	GodInt sum(0);
+	int len = rhs.size();
+	for (register int k = 0; k < len; k++) {
+		sum += this->multiplyBySingleDigit(rhs.getDigit(k));
+		(*this) *= 10;
+	}
+	*this = sum;
+	return *this;
+}
 
 GodInt GodInt::operator-()
 {
@@ -423,4 +464,25 @@ bool operator!=(const int& lhs, const GodInt& rhs) {
 }
 bool operator!=(const GodInt& lhs, const int& rhs) {
 	return !operator==(lhs, rhs);
+}
+
+//utilities
+GodInt GodInt::range_prod(GodInt low, GodInt high) {
+	if ((low + 1) < high) {
+		ulli mid = (high + low) / 2;
+		return range_prod(low, mid) * range_prod(mid + 1, high);
+	}
+	if (low == high) {
+		return low;
+	}
+	return (low * high);
+}
+
+GodInt GodInt::factorial(long long int n) {
+	if (n < 2)return GodInt(1);
+	return GodInt::range_prod(1, n);
+}
+
+GodInt GodInt::fibonacci(long long int n) {
+	return GodInt(0);
 }

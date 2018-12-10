@@ -21,33 +21,13 @@ public:
 };
 
 int main() {
-	/*Timer t;
-	GodInt *result = new GodInt();
-	*result = fibo_iter(500000);
-
-	std::cout << "Time elapsed: " << t.elapsed() << " seconds \n";
-	std::cout << *result << '\n';*/
-	GodInt test1(123);
-	GodInt test2 = test1.multiplyBySingleDigit(82);
-	std::cout << test2 << std::endl;
+	Timer t;
+	GodInt test2 = GodInt::factorial(100000);
+	double time = t.elapsed();
+	std::cout << test2.size() << '\n';
+	std::cout << "Time elapsed: " << time << " seconds \n";
 
 	system("pause");
 
 	return 0;
-}
-
-GodInt fibo_iter(int n)
-{
-	GodInt previous = 1;
-	GodInt current = 1;
-	GodInt next = 1;
-
-	for (register int i = 3; i <= n; ++i)
-	{
-		next = current + previous;
-		previous = current;
-		current = next;
-		std::cout << i << '\n';
-	}
-	return next;
 }
