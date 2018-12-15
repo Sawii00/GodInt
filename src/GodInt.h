@@ -41,6 +41,7 @@ public:
 	void clearZeros();
 	unsigned long long int toInt();
 	~GodInt();
+	void clear();
 
 	GodInt multiplyBySingleDigit(short digit);
 

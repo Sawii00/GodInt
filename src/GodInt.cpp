@@ -52,6 +52,10 @@ GodInt::GodInt(const GodInt &rhs)
 		addMSV(rhs.getDigit(i));
 	}
 }
+void GodInt::clear() {
+	digits.clear();
+	sign = Sign::positive;
+}
 
 void GodInt::addLSV(std::uint8_t n)
 {
@@ -466,6 +470,7 @@ bool operator!=(const GodInt& lhs, const int& rhs) {
 	return !operator==(lhs, rhs);
 }
 
+#if 0
 //utilities
 GodInt GodInt::range_prod(GodInt low, GodInt high) {
 	if ((low + 1) < high) {
@@ -486,3 +491,5 @@ GodInt GodInt::factorial(long long int n) {
 GodInt GodInt::fibonacci(long long int n) {
 	return GodInt(0);
 }
+
+#endif
