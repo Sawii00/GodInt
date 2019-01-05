@@ -95,7 +95,7 @@ std::string GodInt::toString() const
 GodInt GodInt::pow(GodInt & lhs, int n)
 {
 	GodInt result(lhs);
-	for (register int i = 0; i < n; i++) {
+	for (register int i = 1; i < n; i++) {
 		result *= lhs;
 	}
 	return result;
@@ -108,7 +108,8 @@ GodInt GodInt::pow(GodInt & lhs, GodInt & rhs)
 
 void GodInt::clearZeros()
 {
-	for (register int i = size() - 1; getDigit(i) == 0; i--) {
+	if (size() == 0)return;
+	for (register int i = size() - 1; getDigit(i) == 0 && size() > 0; i--) {
 		digits.pop_back();
 	}
 }
@@ -304,12 +305,15 @@ GodInt GodInt::multiplyBySingleDigit(short digit)
 {
 	//ONLY USE WITH 1-DIGIT NUMBERSSSSSSSSSSSSSSSSSS AND POSITIVE ONES
 	if (digit <= 0 || digit / 10 != 0)throw"Error, only use with 1-digit positive numbers";
-	int res = 0;
+	GodInt ten(10);
+	GodInt res = 0;
+	GodInt pow_of_ten;
 	for (int i = 0; i < size(); i++)
 	{
-		res += getDigit(i) * digit * int(std::pow(10.0, i));
+		pow_of_ten = GodInt::pow(ten, i);
+		res += (getDigit(i) * digit) * pow_of_ten;
 	}
-	return GodInt(res);
+	return res;
 }
 
 GodInt & GodInt::operator *=(const int n) {

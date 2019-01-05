@@ -6,6 +6,8 @@
 #include <string>
 void EulerProblem8();
 void EulerProblem13();
+void EulerProblem16();
+typedef unsigned long long int ulli;
 
 class Timer {
 private:
@@ -25,8 +27,16 @@ public:
 };
 
 int main() {
+	EulerProblem16();
 	system("pause");
 	return 0;
+}
+
+void EulerProblem16() {
+	GodInt power_of_two(2);
+	GodInt res;
+	res = GodInt::pow(power_of_two, 35);
+	std::cout << res;
 }
 
 void EulerProblem13() {
@@ -53,8 +63,8 @@ void EulerProblem8() {
 
 	GodInt temp(0);
 	GodInt result(0);
-	unsigned long long int comparison = 1;
-	unsigned long long int greatest_comparison = 1;
+	ulli comparison = 1;
+	ulli greatest_comparison = 1;
 
 	Timer t;
 
