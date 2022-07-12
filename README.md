@@ -1,2 +1,2 @@
 # GodInt
-Extended Integer data type which allows exceeding 64bit limit for the int type in C++
+Extended Integer data type that allows exceeding 64bit limit for the int type in C++. It does so by representing a number in decimal and storing the digits within a variable-size vector. This clearly comes at a cost of reduced performance both due to the dynamic nature of the vector,  but also because of the waste in memory caused by using bytes to store digits from 0 to 9. We could think to pack multiple digits within the same byte, even though it would require smart encoding to avoid impacting excessively the operations on them. 
